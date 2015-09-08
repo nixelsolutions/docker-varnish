@@ -13,6 +13,8 @@ RUN echo "deb https://repo.varnish-cache.org/ubuntu/ trusty varnish-4.0" >> /etc
 RUN apt-get update && \
     apt-get -y install varnish
 
+ENV BACKEND_SERVERS **ChangeMe**
+ENV BACKEND_PORT 80
 ENV MAX_CACHE_SIZE 256M
 ENV HTTP_PORT 80
 
@@ -25,5 +27,6 @@ RUN mkdir -p /usr/local/bin
 ADD ./bin /usr/local/bin
 RUN chmod +x /usr/local/bin/*.sh
 ADD ./etc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD ./etc/varnish/default.vlc /etc/varnish/template.vlc
 
 CMD ["/usr/local/bin/run.sh"]
