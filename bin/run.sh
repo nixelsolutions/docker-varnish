@@ -31,7 +31,7 @@ default_director="director default_director round-robin {"
 for backend in `echo ${BACKEND_SERVERS} | sed "s/,/ /g"`; do
    echo "=> Adding backend $backend to Varnish configuration..."
    backend_id=$((backends++))
-   echo "backend web${backend_id} { .host = ${backend}; .port = ${BACKEND_PORT}}" >> /etc/varnish/default.vcl
+   echo "backend web${backend_id} { .host = ${backend}; .port = ${BACKEND_PORT};}" >> /etc/varnish/default.vcl
    default_director="${default_director}\n  { .backend = web${backend_id};}"
 done
 default_director="${default_director}\n}"
