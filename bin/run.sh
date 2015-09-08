@@ -25,7 +25,7 @@ if [ "${HTTP_PORT}" == "**ChangeMe**" -o -z "${HTTP_PORT}" ]; then
 fi
 
 echo "=> Configuring Varnish..."
-cp -p /etc/varnish/template.vcl /etc/varnish/default.vcl
+echo -e "vlc 4.0;\n" > /etc/varnish/default.vcl
 backends=0
 default_director="director default_director round-robin {"
 for backend in `echo ${BACKEND_SERVERS} | sed "s/,/ /g"`; do
@@ -36,6 +36,7 @@ for backend in `echo ${BACKEND_SERVERS} | sed "s/,/ /g"`; do
 done
 default_director="${default_director}\n}"
 echo -e "\n${default_director}" >> /etc/varnish/default.vcl
+cat /etc/varnish/template.vcl >> /etc/varnish/default.vcl
 
 echo "=> Starting Varnish with these parameters:"
 echo "MAX_CACHE_SIZE = ${MAX_CACHE_SIZE}"
