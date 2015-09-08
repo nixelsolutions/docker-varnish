@@ -14,6 +14,11 @@ if [ "${BACKEND_PORT}" == "**ChangeMe**" -o -z "${BACKEND_PORT}" ]; then
    exit 1
 fi
 
+if [ "${BACKEND_HEALTHCHECK}" == "**ChangeMe**" -o -z "${BACKEND_HEALTHCHECK}" ]; then
+   echo "*** ERROR: you need to define BACKEND_HEALTHCHECK environment variable - Exiting ..."
+   exit 1
+fi
+
 if [ "${MAX_CACHE_SIZE}" == "**ChangeMe**" -o -z "${MAX_CACHE_SIZE}" ]; then
    echo "*** ERROR: you need to define MAX_CACHE_SIZE environment variable - Exiting ..."
    exit 1
@@ -31,7 +36,12 @@ default_director="sub vcl_init {\n  new bar = directors.round_robin();"
 for backend in `echo ${BACKEND_SERVERS} | sed "s/,/ /g"`; do
    echo "=> Adding backend $backend to Varnish configuration..."
    backend_id=$((backends++))
-   echo "backend web${backend_id} { .host = \"${backend}\"; .port = \"${BACKEND_PORT}\";}" >> /etc/varnish/default.vcl
+   echo "\
+backend web${backend_id} { \
+  .host = \"${backend}\"; \
+  .port = \"${BACKEND_PORT}\"; \
+  .probe = { .url = \"${BACKEND_HEALTHCHECK}\"; .timeout = 5s; .interval = 5s; .window = 5; .threshold = 3; } \
+}" >> /etc/varnish/default.vcl
    default_director="${default_director}\n    bar.add_backend(web${backend_id});"
 done
 default_director="${default_director}\n}"
