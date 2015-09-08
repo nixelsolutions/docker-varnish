@@ -25,18 +25,18 @@ if [ "${HTTP_PORT}" == "**ChangeMe**" -o -z "${HTTP_PORT}" ]; then
 fi
 
 echo "=> Configuring Varnish..."
-echo -e "vcl 4.0;\n" > /etc/varnish/default.vcl
+cp /etc/varnish/start.vcl /etc/varnish/default.vcl
 backends=0
-default_director="director default_director round-robin {"
+default_director="sub vcl_init {\n  new bar = directors.round_robin();"
 for backend in `echo ${BACKEND_SERVERS} | sed "s/,/ /g"`; do
    echo "=> Adding backend $backend to Varnish configuration..."
    backend_id=$((backends++))
    echo "backend web${backend_id} { .host = \"${backend}\"; .port = \"${BACKEND_PORT}\";}" >> /etc/varnish/default.vcl
-   default_director="${default_director}\n  { .backend = web${backend_id};}"
+   default_director="${default_director}\n    bar.add_backend(web${backend_id});"
 done
 default_director="${default_director}\n}"
 echo -e "\n${default_director}" >> /etc/varnish/default.vcl
-cat /etc/varnish/template.vcl >> /etc/varnish/default.vcl
+cat /etc/varnish/end.vcl >> /etc/varnish/default.vcl
 
 echo "=> Starting Varnish with these parameters:"
 echo "MAX_CACHE_SIZE = ${MAX_CACHE_SIZE}"
