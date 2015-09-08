@@ -13,7 +13,12 @@ RUN echo "deb https://repo.varnish-cache.org/ubuntu/ trusty varnish-4.0" >> /etc
 RUN apt-get update && \
     apt-get -y install varnish
 
+ENV MAX_CACHE_SIZE 256M
+ENV HTTP_PORT 80
+
 ENV DEBUG 0
+
+EXPOSE ${HTTP_PORT}
 
 RUN mkdir -p /var/log/supervisor
 RUN mkdir -p /usr/local/bin
