@@ -13,6 +13,7 @@ RUN echo "deb https://repo.varnish-cache.org/ubuntu/ trusty varnish-4.0" >> /etc
 RUN apt-get update && \
     apt-get -y install varnish
 
+ENV VARNISH_CFG_DIR /etc/varnish
 ENV BACKEND_SERVERS **ChangeMe**
 ENV BACKEND_PORT 80
 ENV BACKEND_HEALTHCHECK /
@@ -21,6 +22,8 @@ ENV HTTP_PORT 80
 
 ENV DEBUG 0
 
+VOLUME ${VARNISH_CFG_DIR}
+
 EXPOSE ${HTTP_PORT}
 
 RUN mkdir -p /var/log/supervisor
@@ -28,6 +31,6 @@ RUN mkdir -p /usr/local/bin
 ADD ./bin /usr/local/bin
 RUN chmod +x /usr/local/bin/*.sh
 ADD ./etc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-ADD ./etc/varnish /etc/varnish
+ADD .${VARNISH_CFG_DIR} ${VARNISH_CFG_DIR}
 
 CMD ["/usr/local/bin/run.sh"]
