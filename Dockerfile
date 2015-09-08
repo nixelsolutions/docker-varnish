@@ -27,6 +27,6 @@ RUN mkdir -p /usr/local/bin
 ADD ./bin /usr/local/bin
 RUN chmod +x /usr/local/bin/*.sh
 ADD ./etc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-ADD ./etc/varnish/default.vlc /etc/varnish/template.vlc
+ADD ./etc/varnish/default.vcl /etc/varnish/template.vcl
 
 CMD ["/usr/local/bin/run.sh"]
