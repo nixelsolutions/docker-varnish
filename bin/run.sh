@@ -46,7 +46,7 @@ backend web${backend_id} { \
 done
 default_director="${default_director}\n}"
 echo -e "\n${default_director}" >> ${VARNISH_CFG_DIR}/default.vcl
-cat /end.vcl >> ${VARNISH_CFG_DIR}/default.vcl
+cat ${VARNISH_CFG_DIR}/end.vcl >> ${VARNISH_CFG_DIR}/default.vcl
 
 echo "=> Starting Varnish with these parameters:"
 echo "MAX_CACHE_SIZE = ${MAX_CACHE_SIZE}"
