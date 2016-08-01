@@ -3,7 +3,16 @@ acl purge {
  "10.0.0.0"/8;
 }
 
+sub vcl_pipe {
+ if (req.http.upgrade) {
+  set bereq.http.upgrade = req.http.upgrade;
+ }
+}
+
 sub vcl_recv {
+ if (req.http.upgrade ~ "(?i)websocket") {
+  return (pipe);
+ }
  if (req.method == "PURGE") {
   if (client.ip !~ purge) {
    return (synth(405));
