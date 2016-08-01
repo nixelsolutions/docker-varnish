@@ -40,7 +40,7 @@ for backend in `echo ${BACKEND_SERVERS} | sed "s/,/ /g"`; do
 backend web${backend_id} { \
   .host = \"${backend}\"; \
   .port = \"${BACKEND_PORT}\"; \
-  .probe = { .url = \"${BACKEND_HEALTHCHECK}\"; .timeout = 5s; .interval = 5s; .window = 5; .threshold = 3; .expected_response = 200; } \
+  .probe = { .url = \"${BACKEND_HEALTHCHECK}\"; .timeout = 5s; .interval = 5s; .window = 5; .threshold = 3; .expected_response = 503; } \
 }" >> ${VARNISH_CFG_DIR}/default.vcl
    default_director="${default_director}\n    bar.add_backend(web${backend_id});"
 done
