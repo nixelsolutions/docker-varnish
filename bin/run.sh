@@ -40,8 +40,8 @@ for backend in `echo ${BACKEND_SERVERS} | sed "s/,/ /g"`; do
 backend web${backend_id} { \
   .host = \"${backend}\"; \
   .port = \"${BACKEND_PORT}\"; \
-  .first_byte_timeout = \"${BACKEND_TIMEOUT}\"; \
-  .between_bytes_timeout = \"${BACKEND_TIMEOUT}\"; \
+  .first_byte_timeout = ${BACKEND_TIMEOUT}; \
+  .between_bytes_timeout = ${BACKEND_TIMEOUT}; \
   .probe = { .url = \"${BACKEND_HEALTHCHECK}\"; .timeout = 5s; .interval = 5s; .window = 5; .threshold = 3; .expected_response = 200; } \
 }" >> ${VARNISH_CFG_DIR}/default.vcl
    default_director="${default_director}\n    bar.add_backend(web${backend_id});"
